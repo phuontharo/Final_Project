@@ -80,7 +80,7 @@ public class Controller {
         for (int i = 0; i < graphs.size(); i++) {
             ArrayList<Node> aroundNode = allNodeAround(graphs.get(i));
             for (int j = 0; j < aroundNode.size(); j++) {
-                if (aroundNode.get(j).getValue() == Values.valueEmpty) {
+                if (aroundNode.get(j).getValue() == Values.valueEmpty || aroundNode.get(j).getValue() == Values.death_value ) {
                     return false;
                 }
             }

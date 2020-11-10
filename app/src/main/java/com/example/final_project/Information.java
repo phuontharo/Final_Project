@@ -44,6 +44,7 @@ public class Information extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_information);
+        getSupportActionBar().hide();
         setUp();
     }
 
@@ -65,7 +66,7 @@ public class Information extends AppCompatActivity {
         editor = pref.edit();
         preRegisterInfor();
         setScreenInformation(playerInfor[0]);
-        intent = new Intent(this, LocalGame.class);
+        intent = new Intent(this, LocalGameActivity.class);
     }
 
     private void preRegisterInfor() { // set infor default for player
