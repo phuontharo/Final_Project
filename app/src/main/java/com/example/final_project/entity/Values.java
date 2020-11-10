@@ -18,6 +18,8 @@ public class Values {
     public static int HOST = 3;
     public static int GUEST = 4;
 
+    public static int HP = 100;
+
     public static int chess_background_img = R.drawable.req;
     public static int black_chess = R.drawable.black;
     public static int white_chess = R.drawable.white;

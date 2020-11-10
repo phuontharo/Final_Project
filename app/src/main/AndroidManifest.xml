@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -16,10 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LocalGameActivity"></activity>
-        <activity android:name=".Information"></activity>
+        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".LocalGameActivity" />
+        <activity android:name=".Information" />
         <activity android:name=".ControllerLanGameActivity" />
-        <activity android:name=".LanGameActivity"></activity>
+        <activity android:name=".LanGameActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
