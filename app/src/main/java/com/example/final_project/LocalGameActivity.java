@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,6 +22,9 @@ import com.example.final_project.entity.Node;
 import com.example.final_project.entity.Player;
 import com.example.final_project.entity.Values;
 
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class LocalGameActivity extends AppCompatActivity {
 
     Node[][] board;
@@ -28,11 +33,25 @@ public class LocalGameActivity extends AppCompatActivity {
     TableLayout layout;
     ImageView avatar1, avatar2, currentChess;
     ProgressBar HP1, HP2;
-    TextView name1, name2;
+    TextView name1, name2, timer1, timer2;
     int defaultColor = Values.black_chess;
     int hpLost = 0;
     int buttonEffect = R.raw.choose_sound;
     int playSound = R.raw.play_sound;
+
+
+    int p = 5, s = 5;
+    int time = p * 60 + s;
+    Handler handler;
+    AtomicBoolean isBlackTimeRunning = new AtomicBoolean(false),
+            isWhiteTimeRunning = new AtomicBoolean(false);
+
+    String timeBlack, timeWhite;
+    Thread thb;
+    Thread thw;
+    private CountDownTimer mCountDownTimer;
+    private boolean mTimerRunning;
+    private long mTimeLeftInMillis = time * 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +80,9 @@ public class LocalGameActivity extends AppCompatActivity {
         HP2 = findViewById(R.id.HP2);
         name1 = findViewById(R.id.playerName1);
         name2 = findViewById(R.id.playerName2);
+        timer1 = findViewById(R.id.timer1);
+        timer2 = findViewById(R.id.timer2);
+
 
         HP1.setProgress(100);
         HP2.setProgress(100);
@@ -103,6 +125,27 @@ public class LocalGameActivity extends AppCompatActivity {
             }
             layout.addView(row);
         }
+    }
+    private void updateCountDownText() {
+        int minutes = (int) (mTimeLeftInMillis / 1000) / 60;
+        int seconds = (int) (mTimeLeftInMillis / 1000) % 60;
+        String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+        timer1.setText(timeLeftFormatted);
+    }
+    private void startTimer() {
+        mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mTimeLeftInMillis = millisUntilFinished;
+                updateCountDownText();
+            }
+
+            @Override
+            public void onFinish() {
+                mTimerRunning = false;
+            }
+        }.start();
+        mTimerRunning = true;
     }
     void changeSizeHP(ProgressBar pb) {
         pb.setProgress(pb.getProgress() - hpLost * 10);
