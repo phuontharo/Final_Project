@@ -25,6 +25,8 @@ import com.example.final_project.entity.Values;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.example.final_project.MainActivity.musicBackgroundService;
+
 public class LocalGameActivity extends AppCompatActivity {
 
     Node[][] board;
@@ -42,16 +44,11 @@ public class LocalGameActivity extends AppCompatActivity {
 
     int p = 5, s = 5;
     int time = p * 60 + s;
-    Handler handler;
-    AtomicBoolean isBlackTimeRunning = new AtomicBoolean(false),
-            isWhiteTimeRunning = new AtomicBoolean(false);
 
-    String timeBlack, timeWhite;
-    Thread thb;
-    Thread thw;
-    private CountDownTimer mCountDownTimer;
-    private boolean mTimerRunning;
-    private long mTimeLeftInMillis = time * 1000;
+    private CountDownTimer mCountDownBlackTimer, mCountDownWhiteTimer;
+    private boolean mBlackTimerRunning, mWhiteTimerRunning = false;
+    private long mBlackTimeLeftInMillis = time * 1000,
+            mWhiteTimeLeftInMillis = time * 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +60,18 @@ public class LocalGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_local_game);
         setting();
         Init();
+        startBlackTimer();
     }
 
-    void setting(){
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (musicBackgroundService != null) {
+            musicBackgroundService.resumeMusic();
+        }
+    }
+
+    void setting() {
         board = new Node[Values.board_size][Values.board_size];
         controller = new Controller(board);
         Bundle bundle = getIntent().getExtras();
@@ -80,9 +86,8 @@ public class LocalGameActivity extends AppCompatActivity {
         HP2 = findViewById(R.id.HP2);
         name1 = findViewById(R.id.playerName1);
         name2 = findViewById(R.id.playerName2);
-        timer1 = findViewById(R.id.timer1);
-        timer2 = findViewById(R.id.timer2);
-
+        timer1 = findViewById(R.id.textTime1);
+        timer2 = findViewById(R.id.textTime2);
 
         HP1.setProgress(100);
         HP2.setProgress(100);
@@ -92,6 +97,7 @@ public class LocalGameActivity extends AppCompatActivity {
         avatar2.setImageResource(player2.getImgId());
         currentChess.setImageResource(defaultColor);
     }
+
     void Init() {
         for (int i = 0; i < board.length; i++) {
             TableRow row = new TableRow(this);
@@ -102,11 +108,11 @@ public class LocalGameActivity extends AppCompatActivity {
                 button.setImageResource(Values.chess_background_img);
                 TableRow.LayoutParams layout = new TableRow.LayoutParams(110, 110);
                 button.setLayoutParams(layout);
-                final Node node = new Node(i, j, button, Values.valueEmpty,false);
+                final Node node = new Node(i, j, button, Values.valueEmpty, false);
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(node.getValue() == Values.valueEmpty){
+                        if (node.getValue() == Values.valueEmpty) {
                             MediaPlayer mPlayer = MediaPlayer.create(getApplication(), playSound);
                             mPlayer.start();
                             button.setImageResource(defaultColor);
@@ -114,6 +120,13 @@ public class LocalGameActivity extends AppCompatActivity {
                             hpLost = controller.execute(x, y);
                             if (hpLost != 0) {
                                 subHP();
+                            }
+                            if (defaultColor == Values.black_chess) {
+                                pauseBlackTimer();
+                                startWhiteTimer();
+                            } else {
+                                pauseWhiteTimer();
+                                startBlackTimer();
                             }
                             defaultColor = defaultColor == Values.black_chess ? Values.white_chess : Values.black_chess;
                             currentChess.setImageResource(defaultColor);
@@ -126,30 +139,67 @@ public class LocalGameActivity extends AppCompatActivity {
             layout.addView(row);
         }
     }
-    private void updateCountDownText() {
-        int minutes = (int) (mTimeLeftInMillis / 1000) / 60;
-        int seconds = (int) (mTimeLeftInMillis / 1000) % 60;
-        String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-        timer1.setText(timeLeftFormatted);
-    }
-    private void startTimer() {
-        mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
+
+    private void startBlackTimer() {
+        mCountDownBlackTimer = new CountDownTimer(mBlackTimeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                mTimeLeftInMillis = millisUntilFinished;
-                updateCountDownText();
+                mBlackTimeLeftInMillis = millisUntilFinished;
+                updateCountDownText(timer1, mBlackTimeLeftInMillis);
             }
 
             @Override
             public void onFinish() {
-                mTimerRunning = false;
+                mBlackTimerRunning = false;
             }
         }.start();
-        mTimerRunning = true;
+        mBlackTimerRunning = true;
     }
+
+    private void startWhiteTimer() {
+        mCountDownWhiteTimer = new CountDownTimer(mWhiteTimeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mWhiteTimeLeftInMillis = millisUntilFinished;
+                updateCountDownText(timer2, mWhiteTimeLeftInMillis);
+            }
+
+            @Override
+            public void onFinish() {
+                mWhiteTimerRunning = false;
+            }
+        }.start();
+        mWhiteTimerRunning = true;
+    }
+
+    private void pauseBlackTimer() {
+        mCountDownBlackTimer.cancel();
+        mBlackTimerRunning = false;
+    }
+
+    private void pauseWhiteTimer() {
+        mCountDownWhiteTimer.cancel();
+        mWhiteTimerRunning = false;
+    }
+
+    private void resetTimer() {
+        mBlackTimeLeftInMillis = time;
+        mWhiteTimeLeftInMillis = time;
+        updateCountDownText(timer1, mBlackTimeLeftInMillis);
+        updateCountDownText(timer2, mWhiteTimeLeftInMillis);
+    }
+
+    private void updateCountDownText(TextView textTimer, long timeLeft) {
+        int minutes = (int) (timeLeft / 1000) / 60;
+        int seconds = (int) (timeLeft / 1000) % 60;
+        String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+        textTimer.setText(timeLeftFormatted);
+    }
+
     void changeSizeHP(ProgressBar pb) {
         pb.setProgress(pb.getProgress() - hpLost * 10);
     }
+
     void subHP() {
         if (defaultColor == Values.black_chess) {
             changeSizeHP(HP2);
@@ -170,9 +220,10 @@ public class LocalGameActivity extends AppCompatActivity {
         }
         HP1.setProgress(100);
         HP2.setProgress(100);
+        resetTimer();
     }
 
-    public void quitGameOnc(View view) {
+    public void quitOnClick(View view) {
         MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
         mPlayer.start();
 

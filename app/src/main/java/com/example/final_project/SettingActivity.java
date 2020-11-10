@@ -3,6 +3,7 @@ package com.example.final_project;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
@@ -10,8 +11,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 
 import com.example.final_project.entity.Values;
 
@@ -22,6 +25,8 @@ public class SettingActivity extends AppCompatActivity {
     String[] sizeBoard;
     int buttonEffect = R.raw.choose_sound;
     EditText textSizeHP;
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +35,19 @@ public class SettingActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_setting);
+        settingSpinner();
+        settingSwitch();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (musicBackgroundService != null) {
+            musicBackgroundService.resumeMusic();
+        }
+    }
+
+    private void settingSpinner() {
         spinner = findViewById(R.id.spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -51,15 +69,53 @@ public class SettingActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (musicBackgroundService != null) {
-            musicBackgroundService.resumeMusic();
-        }
+    private void settingSwitch() {
+        pref = getSharedPreferences("GAME_SETTING", MODE_PRIVATE); // ten cua file luu tru
+        editor = pref.edit();
+
+        Switch swM = (Switch) findViewById(R.id.isMusic);
+        swM.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled
+                    editor.remove("MUSIC");
+                    editor.commit();
+                    editor.putInt("MUSIC", 1);
+                    editor.commit();
+                } else {
+                    // The toggle is disabled
+                    editor.remove("MUSIC");
+                    editor.commit();
+                    editor.putInt("MUSIC", 0);
+                    editor.commit();
+                }
+            }
+        });
+
+        Switch swE = (Switch) findViewById(R.id.isEffect);
+        swE.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled
+                    editor.remove("EFFECT");
+                    editor.commit();
+                    editor.putInt("EFFECT", 1);
+                    editor.commit();
+                } else {
+                    // The toggle is disabled
+                    editor.remove("EFFECT");
+                    editor.commit();
+                    editor.putInt("EFFECT", 0);
+                    editor.commit();
+                }
+            }
+        });
+    }
+
+    void save() {
+        Values.HP = Integer.parseInt(textSizeHP.getText().toString());
     }
 
     public void saveOnClick(View view) {
@@ -76,9 +132,5 @@ public class SettingActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-    }
-
-    void save(){
-        Values.HP = Integer.parseInt(textSizeHP.getText().toString());
     }
 }

@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -21,10 +22,12 @@ import com.example.final_project.controller.HomeWatcher;
 import com.example.final_project.entity.Values;
 
 public class MainActivity extends AppCompatActivity {
-
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
     private int buttonEffect = R.raw.menu_sound;
     public static BackgroundMusic musicBackgroundService;
     HomeWatcher mHomeWatcher;
+    int musicMode, effectMode;
 
     //setting music
     private boolean mIsBound = false; // link with activity
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
             musicBackgroundService = null;
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,13 +53,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
         getScreen();
+        settingMusic();
+    }
 
+    void getScreen() {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Values.board_width = size.x - 100;
+        Values.board_height = size.x - 100;
+    }
 
+    private void settingMusic() {
+        pref = getSharedPreferences("GAME_SETTING", MODE_PRIVATE); // ten cua file luu tru
+        editor = pref.edit();
+        musicMode = pref.getInt("MUSIC", -1);
+        effectMode = pref.getInt("EFFECT", -1);
         //music
         doBindService();
         Intent music = new Intent();
         music.setClass(this, BackgroundMusic.class);
         startService(music);
+       // musicBackgroundService.setMusicVolume(0, 0);
 
         // home button - end music
         mHomeWatcher = new HomeWatcher(this);
@@ -77,13 +96,6 @@ public class MainActivity extends AppCompatActivity {
         mHomeWatcher.startWatch();
     }
 
-    void getScreen(){
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        Values.board_width = size.x -100;
-        Values.board_height = size.x-100;
-    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -151,8 +163,8 @@ public class MainActivity extends AppCompatActivity {
         MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
         mPlayer.start();
 
-//        Intent intent = new Intent(this, Setting.class);
-//        startActivity(intent);
+        Intent intent = new Intent(this, SettingActivity.class);
+        startActivity(intent);
     }
 
     public void onClickQuit(View view) {

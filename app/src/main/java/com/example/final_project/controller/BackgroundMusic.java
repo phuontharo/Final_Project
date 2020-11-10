@@ -14,7 +14,7 @@ public class BackgroundMusic extends Service implements MediaPlayer.OnErrorListe
     MediaPlayer mPlayer;
     private int length = 0;
     int musicID = R.raw.background;
-    int leftVol = 50, rightVol = 50;
+    int leftVol = 100, rightVol = 100;
     public boolean isPlaying = true;
 
     public BackgroundMusic() {

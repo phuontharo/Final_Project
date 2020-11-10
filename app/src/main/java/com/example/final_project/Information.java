@@ -62,7 +62,7 @@ public class Information extends AppCompatActivity {
         avatar = findViewById(R.id.avatar);
         inputName = findViewById(R.id.name);
         listImg = getListAvatar();
-        pref = getSharedPreferences("MY_INFOR", MODE_PRIVATE); // ten cua file luu tru
+        pref = getSharedPreferences("PLAYER_INFORMATION", MODE_PRIVATE); // ten cua file luu tru
         editor = pref.edit();
         preRegisterInfor();
         setScreenInformation(playerInfor[0]);
@@ -81,6 +81,8 @@ public class Information extends AppCompatActivity {
                 || name2 == null || avatar2 == -1) {
             p1 = new Player("Joe", listImg.get(0));
             p2 = new Player("Akaly", listImg.get(1));
+            avatar1 = 0;
+            avatar2 = 1;
         } else {
             p1 = new Player(name, listImg.get(avatar1));
             p2 = new Player(name2, listImg.get(avatar2));
@@ -92,10 +94,8 @@ public class Information extends AppCompatActivity {
     private void setScreenInformation(Player player) {
         inputName.setHint("Player " + (currentPlayer + 1));
         inputName.setText(player.getName());
-        // Hồi sửa chỗ này nè ----possIMG = avatar1;
-        if (currentPlayer == 0) possIMG = 0;
-        else possIMG = 0;
-        //------- possIMG = avatar2
+        if (currentPlayer == 0) possIMG = avatar1;
+        else possIMG = avatar2;
         avatar.setImageResource(player.getImgId());
         setImageForButton();
     }
@@ -118,8 +118,8 @@ public class Information extends AppCompatActivity {
     }
 
     private void setImageForButton() {
-        System.out.println("Pre IMG "+ preIMG);
-        System.out.println("Poss IMG "+ possIMG);
+        System.out.println("Pre IMG " + preIMG);
+        System.out.println("Poss IMG " + possIMG);
         preIMG = possIMG == 0 ? listImg.size() - 1 : possIMG - 1;
         System.out.println("Pre IMG " + preIMG);
         btnPre.setImageResource(listImg.get(preIMG));
