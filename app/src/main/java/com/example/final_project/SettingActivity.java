@@ -24,6 +24,7 @@ public class SettingActivity extends AppCompatActivity {
     Spinner spinner;
     String[] sizeBoard;
     int buttonEffect = R.raw.choose_sound;
+    int musicMode, effectMode;
     EditText textSizeHP;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
@@ -42,8 +43,8 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (musicBackgroundService != null) {
-            musicBackgroundService.resumeMusic();
+        if (musicBackgroundService != null&&musicBackgroundService.isPlaying==true) {
+           musicBackgroundService.resumeMusic();
         }
     }
 
@@ -74,8 +75,11 @@ public class SettingActivity extends AppCompatActivity {
     private void settingSwitch() {
         pref = getSharedPreferences("GAME_SETTING", MODE_PRIVATE); // ten cua file luu tru
         editor = pref.edit();
-
+        musicMode = pref.getInt("MUSIC", -1);
+        effectMode = pref.getInt("EFFECT", -1);
         Switch swM = (Switch) findViewById(R.id.isMusic);
+        if(musicMode==1)swM.setChecked(true);
+        else swM.setChecked(false);
         swM.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -84,12 +88,16 @@ public class SettingActivity extends AppCompatActivity {
                     editor.commit();
                     editor.putInt("MUSIC", 1);
                     editor.commit();
+                    musicBackgroundService.isPlaying = true;
+                    musicBackgroundService.resumeMusic();
                 } else {
                     // The toggle is disabled
                     editor.remove("MUSIC");
                     editor.commit();
                     editor.putInt("MUSIC", 0);
                     editor.commit();
+                    musicBackgroundService.isPlaying = false;
+                    musicBackgroundService.pauseMusic();
                 }
             }
         });

@@ -36,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder
                 binder) {
             musicBackgroundService = ((BackgroundMusic.ServiceBinder) binder).getService();
+
+            if(musicMode==0){
+                musicBackgroundService.isPlaying = false;
+                musicBackgroundService.pauseMusic();
+            }
         }
 
         public void onServiceDisconnected(ComponentName name) {
@@ -74,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         Intent music = new Intent();
         music.setClass(this, BackgroundMusic.class);
         startService(music);
+
        // musicBackgroundService.setMusicVolume(0, 0);
 
         // home button - end music
@@ -180,9 +186,17 @@ public class MainActivity extends AppCompatActivity {
         mPlayer.start();
         if (musicBackgroundService == null) return;
         if (musicBackgroundService.isMusicMute()) {
+            editor.remove("MUSIC");
+            editor.commit();
+            editor.putInt("MUSIC", 1);
+            editor.commit();
             musicBackgroundService.isPlaying = true;
             musicBackgroundService.resumeMusic();
         } else {
+            editor.remove("MUSIC");
+            editor.commit();
+            editor.putInt("MUSIC", 0);
+            editor.commit();
             musicBackgroundService.isPlaying = false;
             musicBackgroundService.pauseMusic();
         }
