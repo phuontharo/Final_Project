@@ -11,7 +11,7 @@ public class Values {
     public static int board_width= 1000;
     public static int board_height = 1000;
 
-    public static int board_size = 10;
+    public static int board_size = 30;
 
     public static int mode_local = 1;
     public static int mode_lan = 2;

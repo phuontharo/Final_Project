@@ -6,17 +6,14 @@ import com.example.final_project.entity.Values;
 import java.util.ArrayList;
 
 public class Controller {
+
     Node[][] table;
 
     public Controller(Node[][] table) {
         this.table = table;
     }
 
-    static void removeArrayList(){
-
-    }
-
-    public int execute(int x, int y) {
+    public int execute(int x, int y){
         Node node = table[x][y];
         ArrayList<Node> listNode = allOppositeNode(node);
         for (int i = 0; i < listNode.size(); i++) {
@@ -25,21 +22,18 @@ public class Controller {
             boolean isDeath = checkGraphsDeath(tempList);
             if (isDeath) {
                 changeValue(tempList, Values.death_value);
-                listNode.clear();
                 return tempList.size();
             }
         }
-
         ArrayList<Node> selfKill = new ArrayList<>();
         getGraphs(node, selfKill);
         boolean isSelfKill = checkGraphsDeath(selfKill);
-        if (isSelfKill) {
+        if(isSelfKill){
             changeValue(selfKill, Values.death_value);
-            selfKill.clear();
-            return 0 - selfKill.size();
+            return 0- selfKill.size();
         }
-        selfKill.clear();
         return 0;
+
     }
 
     // Lấy các Node xung quanh và có giá trị đảo nghịch
@@ -49,13 +43,13 @@ public class Controller {
         int value = node.getValue();
         for (int i = 0; i < list.size(); i++) {
             Node thisNode = list.get(i);
-            if (thisNode.getValue() != Values.valueEmpty && thisNode.getValue() != value) {
+            if (thisNode.getValue()!= Values.valueEmpty && thisNode.getValue() != value) {
                 result.add(thisNode);
             }
         }
-        list.clear();
-        System.out.println("Oposite : " + node.getX() + ":" + node.getX() + "size : " + result.size());
         return result;
+
+
     }
 
     //Lấy 4 Node xung quanh 1 Node
@@ -87,11 +81,9 @@ public class Controller {
             ArrayList<Node> aroundNode = allNodeAround(graphs.get(i));
             for (int j = 0; j < aroundNode.size(); j++) {
                 if (aroundNode.get(j).getValue() == Values.valueEmpty) {
-                    aroundNode.clear();
                     return false;
                 }
             }
-            aroundNode.clear();
         }
         return true;
     }
@@ -118,3 +110,4 @@ public class Controller {
         }
     }
 }
+
