@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="board_size_array">
+        <item>5</item>
+        <item>7</item>
+        <item>9</item>
+        <item>11</item>
+        <item>13</item>
+    </string-array>
+    <string-array name="main_time">
+        <item>1:00</item>
+        <item>3:00</item>
+        <item>5:00</item>
+        <item>15:00</item>
+        <item>20:00</item>
+        <item>30:00</item>
+    </string-array>
+    <string-array name="sub_time">
+        <item>0:10</item>
+        <item>0:20</item>
+        <item>0:30</item>
+        <item>1:00</item>
+        <item>3:00</item>
+        <item>5:00</item>
+    </string-array>
+</resources>

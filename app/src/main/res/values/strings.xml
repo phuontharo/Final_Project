@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Final_Project</string>
+    <string-array name="list_name">
+        <item>joe</item>
+        <item>akaly</item>
+        <item>cailt</item>
+        <item>daxua</item>
+        <item>ekko</item>
+        <item>ez</item>
+        <item>illaoi</item>
+        <item>jhin</item>
+        <item>jinx</item>
+        <item>kata</item>
+        <item>lux</item>
+        <item>neeko</item>
+        <item>pike</item>
+        <item>quianna</item>
+        <item>sett</item>
+        <item>talon</item>
+        <item>thresh</item>
+        <item>uno</item>
+        <item>zed</item>
+    </string-array>
+</resources>
