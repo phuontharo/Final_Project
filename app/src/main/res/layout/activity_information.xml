@@ -62,6 +62,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/avatar"
         app:layout_constraintEnd_toStartOf="@+id/avatar"
+        app:layout_constraintHorizontal_bias="0.7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/avatar" />
 
@@ -74,43 +75,42 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/avatar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toEndOf="@+id/avatar"
         app:layout_constraintTop_toTopOf="@+id/avatar" />
 
     <ImageView
         android:id="@+id/avatar"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:layout_constraintVertical_bias="0.042" />
+        app:layout_constraintVertical_bias="0.05" />
 
     <ImageButton
         android:id="@+id/btnPreMask"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:backgroundTint="#00FFFFFF"
         android:onClick="onClickPre"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/avatar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/avatar" />
+        app:layout_constraintBottom_toBottomOf="@+id/imagePre"
+        app:layout_constraintEnd_toEndOf="@+id/imagePre"
+        app:layout_constraintStart_toStartOf="@+id/imagePre"
+        app:layout_constraintTop_toTopOf="@+id/imagePre" />
 
     <ImageButton
         android:id="@+id/btnNextMask"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:backgroundTint="#00FFFFFF"
         android:onClick="onClickNext"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/avatar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/avatar"
-        app:layout_constraintTop_toTopOf="@+id/avatar" />
+        app:layout_constraintBottom_toBottomOf="@+id/imageNext"
+        app:layout_constraintEnd_toEndOf="@+id/imageNext"
+        app:layout_constraintStart_toStartOf="@+id/imageNext"
+        app:layout_constraintTop_toTopOf="@+id/imageNext" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,7 +14,7 @@ public class BackgroundMusic extends Service implements MediaPlayer.OnErrorListe
     MediaPlayer mPlayer;
     private int length = 0;
     int musicID = R.raw.background;
-    int leftVol = 100, rightVol = 100;
+    int leftVol = 50, rightVol = 50;
     public boolean isPlaying = true;
 
     public BackgroundMusic() {
@@ -32,7 +32,7 @@ public class BackgroundMusic extends Service implements MediaPlayer.OnErrorListe
         mPlayer.setOnErrorListener(this);
         if (mPlayer != null) {
             mPlayer.setLooping(true);
-            mPlayer.setVolume(leftVol, rightVol);
+          //  mPlayer.setVolume(leftVol, rightVol);
         }
         mPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             public boolean onError(MediaPlayer mp, int what, int extra) {

@@ -34,8 +34,10 @@ public class Information extends AppCompatActivity {
     private Bitmap operation;
     int buttonEffect = R.raw.choose_sound;
     int slideSound = R.raw.slide_sound;
-    SharedPreferences pref;
+    SharedPreferences pref, prefMusic;
     SharedPreferences.Editor editor;
+    int effectMode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +46,13 @@ public class Information extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_information);
-        getSupportActionBar().hide();
         setUp();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (musicBackgroundService != null) {
+        if (musicBackgroundService != null && musicBackgroundService.isPlaying == true) {
             musicBackgroundService.resumeMusic();
         }
     }
@@ -64,7 +65,9 @@ public class Information extends AppCompatActivity {
         listImg = getListAvatar();
         pref = getSharedPreferences("PLAYER_INFORMATION", MODE_PRIVATE); // ten cua file luu tru
         editor = pref.edit();
-        preRegisterInfor();
+        prefMusic = getSharedPreferences("GAME_SETTING", MODE_PRIVATE); // ten cua file luu tru
+        effectMode = pref.getInt("EFFECT", -1);
+         preRegisterInfor();
         setScreenInformation(playerInfor[0]);
         intent = new Intent(this, LocalGameActivity.class);
     }
@@ -131,8 +134,10 @@ public class Information extends AppCompatActivity {
 
     // go to pre picture
     public void onClickPre(View view) {
-        MediaPlayer mPlayer = MediaPlayer.create(this, slideSound);
-        mPlayer.start();
+        if (effectMode != 0) {
+            MediaPlayer mPlayer = MediaPlayer.create(this, slideSound);
+            mPlayer.start();
+        }
 
         possIMG = possIMG == 0 ? listImg.size() - 1 : possIMG - 1;
         avatar.setImageResource(listImg.get(possIMG));
@@ -141,8 +146,10 @@ public class Information extends AppCompatActivity {
 
     // go to next picture
     public void onClickNext(View view) {
-        MediaPlayer mPlayer = MediaPlayer.create(this, slideSound);
-        mPlayer.start();
+        if (effectMode != 0) {
+            MediaPlayer mPlayer = MediaPlayer.create(this, slideSound);
+            mPlayer.start();
+        }
 
         possIMG = possIMG == listImg.size() - 1 ? 0 : possIMG + 1;
         avatar.setImageResource(listImg.get(possIMG));
@@ -176,8 +183,10 @@ public class Information extends AppCompatActivity {
 
     // transmit information of player
     public void onClickOk(View view) {
-        MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
-        mPlayer.start();
+        if (effectMode != 0) {
+            MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
+            mPlayer.start();
+        }
 
         Bundle bundle = getIntent().getExtras();
         playerInfor[currentPlayer] = getInforScreen();

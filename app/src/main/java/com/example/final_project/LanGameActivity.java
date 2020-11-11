@@ -15,7 +15,6 @@ public class LanGameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lan_game);
-        getSupportActionBar().hide();
     }
 
     public void onClickCreateHost(View view) {

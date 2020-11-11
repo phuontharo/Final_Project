@@ -1,4 +1,4 @@
-package com.example.final_project;
+package com.example.final_project.controller;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +10,8 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.View;
+
+import com.example.final_project.R;
 
 public class BackgroundImageView extends View {
     int screenWidth, screenHeight,
@@ -118,7 +120,7 @@ public class BackgroundImageView extends View {
         if (rockX2 < screenWidth - newWidth) {
             canvas.drawBitmap(rock2, rockX2 + newWidth, 0, null);
         }
-        rockX3 -= 6;
+        rockX3 -= 7;
         if (rockX3 < -newWidth) {
             rockX3 = 0;
         }
@@ -127,16 +129,16 @@ public class BackgroundImageView extends View {
             canvas.drawBitmap(rock3, rockX3 + newWidth, 0, null);
         }
 
-        birdsX += 10;
+        birdsX += 4;
         if (birdsX > screenWidth) {
-            birdsX = screenWidth - newWidth*2;
+            birdsX = screenWidth - newWidth;
         }
-        birdsY -= 3;
+        birdsY -= 1;
         if (birdsY < -newHeight) {
             birdsY = 0;
         }
         canvas.drawBitmap(birds, birdsX, birdsY, null);
-        if (birdsX > newWidth) {
+        if (birdsX > screenWidth - newWidth) {
             canvas.drawBitmap(birds, birdsX - newWidth, birdsY + newHeight, null);
         }
 

@@ -31,9 +31,7 @@ public class ControllerLanGameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_controller_lan_game);
-        getSupportActionBar().hide();
         init();
-
     }
 
     void init() {

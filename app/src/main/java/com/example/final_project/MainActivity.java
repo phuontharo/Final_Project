@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 binder) {
             musicBackgroundService = ((BackgroundMusic.ServiceBinder) binder).getService();
 
-            if(musicMode==0){
+            if (musicMode == 0) {
                 musicBackgroundService.isPlaying = false;
                 musicBackgroundService.pauseMusic();
             }
@@ -54,58 +54,15 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
         getScreen();
         settingMusic();
-    }
-
-    void getScreen() {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        Values.board_width = size.x - 100;
-        Values.board_height = size.x - 100;
-    }
-
-    private void settingMusic() {
-        pref = getSharedPreferences("GAME_SETTING", MODE_PRIVATE); // ten cua file luu tru
-        editor = pref.edit();
-        musicMode = pref.getInt("MUSIC", -1);
-        effectMode = pref.getInt("EFFECT", -1);
-        //music
-        doBindService();
-        Intent music = new Intent();
-        music.setClass(this, BackgroundMusic.class);
-        startService(music);
-
-       // musicBackgroundService.setMusicVolume(0, 0);
-
-        // home button - end music
-        mHomeWatcher = new HomeWatcher(this);
-        mHomeWatcher.setOnHomePressedListener(new HomeWatcher.OnHomePressedListener() {
-            @Override
-            public void onHomePressed() {
-                if (musicBackgroundService != null) {
-                    musicBackgroundService.pauseMusic();
-                }
-            }
-
-            @Override
-            public void onHomeLongPressed() {
-                if (musicBackgroundService != null) {
-                    musicBackgroundService.pauseMusic();
-                }
-            }
-        });
-        mHomeWatcher.startWatch();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (musicBackgroundService != null) {
+        if (musicBackgroundService != null && musicBackgroundService.isPlaying == true) {
             musicBackgroundService.resumeMusic();
         }
     }
@@ -148,9 +105,49 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    void getScreen() {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Values.board_width = size.x - 100;
+        Values.board_height = size.x - 100;
+    }
+
+    private void settingMusic() {
+        pref = getSharedPreferences("GAME_SETTING", MODE_PRIVATE); // ten cua file luu tru
+        editor = pref.edit();
+        musicMode = pref.getInt("MUSIC", -1);
+        effectMode = pref.getInt("EFFECT", -1);
+        //music
+        doBindService();
+        Intent music = new Intent();
+        music.setClass(this, BackgroundMusic.class);
+        startService(music);
+        // home button - end music
+        mHomeWatcher = new HomeWatcher(this);
+        mHomeWatcher.setOnHomePressedListener(new HomeWatcher.OnHomePressedListener() {
+            @Override
+            public void onHomePressed() {
+                if (musicBackgroundService != null) {
+                    musicBackgroundService.pauseMusic();
+                }
+            }
+
+            @Override
+            public void onHomeLongPressed() {
+                if (musicBackgroundService != null) {
+                    musicBackgroundService.pauseMusic();
+                }
+            }
+        });
+        mHomeWatcher.startWatch();
+    }
+
     public void onClickStart(View view) {
-        MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
-        mPlayer.start();
+        if (effectMode != 0) {
+            MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
+            mPlayer.start();
+        }
 
         Intent intent = new Intent(this, Information.class);
         intent.putExtra("mode", "double");
@@ -158,32 +155,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickLan(View view) {
-        MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
-        mPlayer.start();
+        if (effectMode != 0) {
+            MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
+            mPlayer.start();
+        }
 
 //        Intent intent = new Intent(this, WaitGuest.class);
 //        startActivity(intent);
     }
 
     public void onClickSetting(View view) {
-        MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
-        mPlayer.start();
+        if (effectMode != 0) {
+            MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
+            mPlayer.start();
+        }
 
         Intent intent = new Intent(this, SettingActivity.class);
         startActivity(intent);
     }
 
     public void onClickQuit(View view) {
-        MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
-        mPlayer.start();
+        if (effectMode != 0) {
+            MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
+            mPlayer.start();
+        }
 
         finish();
         System.exit(0);
     }
 
     public void muteOnClick(View view) {
-        MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
-        mPlayer.start();
+        if (effectMode != 0) {
+            MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
+            mPlayer.start();
+        }
         if (musicBackgroundService == null) return;
         if (musicBackgroundService.isMusicMute()) {
             editor.remove("MUSIC");

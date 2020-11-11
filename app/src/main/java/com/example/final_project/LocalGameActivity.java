@@ -1,8 +1,10 @@
 package com.example.final_project;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -35,20 +37,21 @@ public class LocalGameActivity extends AppCompatActivity {
     TableLayout layout;
     ImageView avatar1, avatar2, currentChess;
     ProgressBar HP1, HP2;
-    TextView name1, name2, timer1, timer2;
+    TextView name1, name2, timer1, timer2, textHP1, textHP2;
     int defaultColor = Values.black_chess;
-    int hpLost = 0;
+    int hpDefault = 30, hpLost = 0, hpLeft1, hpLeft2;
+    float hpRatio;
     int buttonEffect = R.raw.choose_sound;
     int playSound = R.raw.play_sound;
 
-
-    int p = 5, s = 5;
-    int time = p * 60 + s;
+    int time, m, s;
 
     private CountDownTimer mCountDownBlackTimer, mCountDownWhiteTimer;
     private boolean mBlackTimerRunning, mWhiteTimerRunning = false;
-    private long mBlackTimeLeftInMillis = time * 1000,
-            mWhiteTimeLeftInMillis = time * 1000;
+    private long mBlackTimeLeftInMillis, mWhiteTimeLeftInMillis;
+
+    SharedPreferences pref;
+    int effectMode, hp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +59,6 @@ public class LocalGameActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
         setContentView(R.layout.activity_local_game);
         setting();
         Init();
@@ -66,12 +68,15 @@ public class LocalGameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (musicBackgroundService != null) {
+        if (musicBackgroundService != null && musicBackgroundService.isPlaying == true) {
             musicBackgroundService.resumeMusic();
         }
     }
 
     void setting() {
+        pref = getSharedPreferences("GAME_SETTING", MODE_PRIVATE); // ten cua file luu tru
+        effectMode = pref.getInt("EFFECT", -1);
+
         board = new Node[Values.board_size][Values.board_size];
         controller = new Controller(board);
         Bundle bundle = getIntent().getExtras();
@@ -88,6 +93,8 @@ public class LocalGameActivity extends AppCompatActivity {
         name2 = findViewById(R.id.playerName2);
         timer1 = findViewById(R.id.textTime1);
         timer2 = findViewById(R.id.textTime2);
+        textHP1 = findViewById(R.id.textHP1);
+        textHP2 = findViewById(R.id.textHP2);
 
         HP1.setProgress(100);
         HP2.setProgress(100);
@@ -96,6 +103,28 @@ public class LocalGameActivity extends AppCompatActivity {
         avatar1.setImageResource(player1.getImgId());
         avatar2.setImageResource(player2.getImgId());
         currentChess.setImageResource(defaultColor);
+
+        int spinner_pos = pref.getInt("TIME", -1);
+        if (spinner_pos == -1) {
+            m = 5;
+            s = 0;
+        } else {
+            String[] time_values = getResources().getStringArray(R.array.main_time); // VALUE
+            String[] time_detail = time_values[spinner_pos].split(":");
+            m = Integer.valueOf(time_detail[0]);
+            s = Integer.valueOf(time_detail[1]);
+        }
+        time = m * 60 + s;
+        mBlackTimeLeftInMillis = mWhiteTimeLeftInMillis = time * 1000;
+
+        hp = pref.getInt("HP", -1);
+        if (hp == -1) hpLeft1 = hpLeft2 = hpDefault;
+        else {
+            hpLeft1 = hpLeft2 = hp;
+            hpRatio = 100 / hp;
+        }
+
+        updateCountDownText(timer2, mWhiteTimeLeftInMillis);
     }
 
     void Init() {
@@ -108,13 +137,16 @@ public class LocalGameActivity extends AppCompatActivity {
                 button.setImageResource(Values.chess_background_img);
                 TableRow.LayoutParams layout = new TableRow.LayoutParams(110, 110);
                 button.setLayoutParams(layout);
+
                 final Node node = new Node(i, j, button, Values.valueEmpty, false);
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (node.getValue() == Values.valueEmpty) {
-                            MediaPlayer mPlayer = MediaPlayer.create(getApplication(), playSound);
-                            mPlayer.start();
+                            if (effectMode != 0) {
+                                MediaPlayer mPlayer = MediaPlayer.create(getApplication(), playSound);
+                                mPlayer.start();
+                            }
                             button.setImageResource(defaultColor);
                             node.setValues(defaultColor);
                             hpLost = controller.execute(x, y);
@@ -183,8 +215,7 @@ public class LocalGameActivity extends AppCompatActivity {
     }
 
     private void resetTimer() {
-        mBlackTimeLeftInMillis = time;
-        mWhiteTimeLeftInMillis = time;
+        mBlackTimeLeftInMillis = mWhiteTimeLeftInMillis = time * 1000;
         updateCountDownText(timer1, mBlackTimeLeftInMillis);
         updateCountDownText(timer2, mWhiteTimeLeftInMillis);
     }
@@ -197,20 +228,28 @@ public class LocalGameActivity extends AppCompatActivity {
     }
 
     void changeSizeHP(ProgressBar pb) {
-        pb.setProgress(pb.getProgress() - hpLost * 10);
+        int hpBarLeft = (int) (pb.getProgress() - hpLost * hpRatio);
+        hpBarLeft = hpBarLeft > 0 ? hpBarLeft : 0;
+        pb.setProgress(hpBarLeft);
     }
 
     void subHP() {
         if (defaultColor == Values.black_chess) {
+            hpLeft2 = hpLeft2 - hpLost;
+            textHP2.setText("" + hpLeft2);
             changeSizeHP(HP2);
         } else if (defaultColor == Values.white_chess) {
             changeSizeHP(HP1);
+            hpLeft1 = hpLeft1 - hpLost;
+            textHP1.setText("" + hpLeft1);
         }
     }
 
     public void newGameOnClick(View view) {
-        MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
-        mPlayer.start();
+        if (effectMode != 0) {
+            MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
+            mPlayer.start();
+        }
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -224,8 +263,10 @@ public class LocalGameActivity extends AppCompatActivity {
     }
 
     public void quitOnClick(View view) {
-        MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
-        mPlayer.start();
+        if (effectMode != 0) {
+            MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
+            mPlayer.start();
+        }
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

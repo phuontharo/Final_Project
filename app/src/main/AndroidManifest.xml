@@ -15,12 +15,24 @@
         android:roundIcon="@mipmap/hippopotamus"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SettingActivity"></activity>
-        <activity android:name=".LocalGameActivity" />
-        <activity android:name=".Information" />
-        <activity android:name=".ControllerLanGameActivity" />
-        <activity android:name=".LanGameActivity" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".SettingActivity"
+            android:screenOrientation="landscape"></activity>
+        <activity
+            android:name=".LocalGameActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Information"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ControllerLanGameActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".LanGameActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -7,9 +7,13 @@
     android:background="@drawable/background_sky"
     tools:context=".MainActivity">
 
-    <com.example.final_project.BackgroundImageView
+    <com.example.final_project.controller.BackgroundImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView2"
@@ -24,7 +28,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.20" />
+        app:layout_constraintVertical_bias="0.1" />
 
     <ImageButton
         android:id="@+id/imageButton"
@@ -33,7 +37,7 @@
         android:backgroundTint="#00FFFFFF"
         android:onClick="muteOnClick"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +80,7 @@
         android:background="@drawable/blue_button"
         android:onClick="onClickSetting"
         android:text="Setting"
-        app:layout_constraintBottom_toTopOf="@+id/btn_quiz"
+        app:layout_constraintBottom_toTopOf="@+id/btn_quit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +88,7 @@
         app:layout_constraintVertical_bias="0.50" />
 
     <Button
-        android:id="@+id/btn_quiz"
+        android:id="@+id/btn_quit"
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:background="@drawable/blue_button"
@@ -108,5 +112,5 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.95" />
 </androidx.constraintlayout.widget.ConstraintLayout>
