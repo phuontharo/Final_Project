@@ -15,9 +15,10 @@
         android:roundIcon="@mipmap/hippopotamus"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Winner"></activity>
         <activity
             android:name=".SettingActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".LocalGameActivity"
             android:screenOrientation="landscape" />
@@ -47,7 +48,6 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
     </application>
 
 </manifest>

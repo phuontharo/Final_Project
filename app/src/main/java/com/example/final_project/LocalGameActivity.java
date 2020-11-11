@@ -1,5 +1,6 @@
 package com.example.final_project;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -45,6 +46,7 @@ public class LocalGameActivity extends AppCompatActivity {
     int playSound = R.raw.play_sound;
 
     int time, m, s;
+    static int count = 1;
 
     private CountDownTimer mCountDownBlackTimer, mCountDownWhiteTimer;
     private boolean mBlackTimerRunning, mWhiteTimerRunning = false;
@@ -53,6 +55,7 @@ public class LocalGameActivity extends AppCompatActivity {
     SharedPreferences pref;
     int effectMode, hp;
 
+    Player player1, player2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +63,7 @@ public class LocalGameActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_local_game);
+  //      getSupportActionBar().hide();
         setting();
         Init();
         startBlackTimer();
@@ -80,8 +84,8 @@ public class LocalGameActivity extends AppCompatActivity {
         board = new Node[Values.board_size][Values.board_size];
         controller = new Controller(board);
         Bundle bundle = getIntent().getExtras();
-        Player player1 = (Player) bundle.get("player1");
-        Player player2 = (Player) bundle.get("player2");
+        player1 = (Player) bundle.get("player1");
+        player2 = (Player) bundle.get("player2");
 
         layout = findViewById(R.id.table);
         currentChess = findViewById(R.id.curentChess);
@@ -96,6 +100,7 @@ public class LocalGameActivity extends AppCompatActivity {
         textHP1 = findViewById(R.id.textHP1);
         textHP2 = findViewById(R.id.textHP2);
 
+        intent = new Intent(this, Winner.class);
         HP1.setProgress(100);
         HP2.setProgress(100);
         name1.setText(player1.getName());
@@ -227,39 +232,81 @@ public class LocalGameActivity extends AppCompatActivity {
         textTimer.setText(timeLeftFormatted);
     }
 
-    void changeSizeHP(ProgressBar pb) {
-        int hpBarLeft = (int) (pb.getProgress() - hpLost * hpRatio);
-        hpBarLeft = hpBarLeft > 0 ? hpBarLeft : 0;
-        pb.setProgress(hpBarLeft);
-    }
+//    void changeSizeHP(ProgressBar pb) {
+//        int hpBarLeft = (int) (pb.getProgress() - hpLost * hpRatio);
+//        hpBarLeft = hpBarLeft > 0 ? hpBarLeft : 0;
+//        pb.setProgress(hpBarLeft);
+//    }
+void changeSizeHP(ProgressBar pb) {
+    pb.setProgress(pb.getProgress() - hpLost * 20);
+}
 
+    Intent intent;
     void subHP() {
+        boolean is_win = false;
         if (defaultColor == Values.black_chess) {
-            hpLeft2 = hpLeft2 - hpLost;
-            textHP2.setText("" + hpLeft2);
             changeSizeHP(HP2);
+            if (HP2.getProgress() <= 0) {
+                intent.putExtra("winner", player1);
+                intent.putExtra("loser", player2);
+                hpLeft2 = hpLeft2 - hpLost;
+                textHP2.setText("" + hpLeft2);
+                is_win = true;
+            }
         } else if (defaultColor == Values.white_chess) {
             changeSizeHP(HP1);
-            hpLeft1 = hpLeft1 - hpLost;
-            textHP1.setText("" + hpLeft1);
+            if (HP1.getProgress() <= 0) {
+                intent.putExtra("winner", player2);
+                intent.putExtra("loser", player1);
+                hpLeft1 = hpLeft1 - hpLost;
+                textHP1.setText("" + hpLeft1);
+                is_win = true;
+            }
+        }
+        if (is_win) {
+            startActivityForResult(intent, REQUEST_CODE_WIN);
         }
     }
 
+    final int REQUEST_CODE_WIN = 729;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_WIN) {
+                String mess = data.getStringExtra("option");
+                if (mess.equals("newgame")) {
+                    setNewGame();
+                } else if (mess.equals("quit")) {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+        }
+    }
     public void newGameOnClick(View view) {
         if (effectMode != 0) {
             MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
             mPlayer.start();
         }
-
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        setNewGame();
+        resetTimer();
+    }
+    void setNewGame(){
+        defaultColor = Values.black_chess;
+        for (int i = 0; i < Values.board_size; i++) {
+            for (int j = 0; j < Values.board_size; j++) {
                 board[i][j].getButton().setImageResource(Values.chess_background_img);
                 board[i][j].setValues(Values.valueEmpty);
             }
         }
         HP1.setProgress(100);
         HP2.setProgress(100);
-        resetTimer();
+        if(count%10==0){
+            final MediaPlayer mp = MediaPlayer.create(this, R.raw.dungnghien);
+            mp.start();
+        }
+        count++;
     }
 
     public void quitOnClick(View view) {
