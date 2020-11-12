@@ -160,7 +160,8 @@ public class MainActivity extends AppCompatActivity {
             mPlayer.start();
         }
 
-        Intent intent = new Intent(this, LanGameActivity.class);
+        Intent intent = new Intent(this, Information.class);
+        intent.putExtra("mode", "lan");
         startActivity(intent);
     }
 

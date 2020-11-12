@@ -185,11 +185,10 @@ public class Information extends AppCompatActivity {
 
     // transmit information of player
     public void onClickOk(View view) {
-       if(MODE == Values.mode_local){
-           if (effectMode != 0) {
-               MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
-               mPlayer.start();
-           }
+        if (effectMode != 0) {
+            MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
+            mPlayer.start();
+        }
 
            Bundle bundle = getIntent().getExtras();
            playerInfor[currentPlayer] = getInforScreen();
@@ -198,7 +197,8 @@ public class Information extends AppCompatActivity {
                currentPlayer++;
                if (bundle.get("mode").toString().equals("double")) // if Local then go to set player2
                    setScreenInformation(playerInfor[1]);
-               else {//if Lan then get player2 infor
+               else {//if Lan then get player2
+                   intent = new Intent(this, LanGameActivity.class);
                    getPlayerFromLAN();
                    startActivity(intent);
                }
@@ -206,14 +206,11 @@ public class Information extends AppCompatActivity {
                saveFile();
                startActivity(intent);
            }
-       }else{
-
-       }
     }
 
     private void getPlayerFromLAN() {
-        playerInfor[1] = new Player("Player 2 hi", listImg.get(6));
-        intent.putExtra("player2", playerInfor[1]);
+        intent.putExtra("player", playerInfor[0]);
+        startActivity(intent);
     }
 
     public void saveFile() {

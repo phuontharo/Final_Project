@@ -5,12 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.example.final_project.controller.ControllerGame;
 import com.example.final_project.entity.Message;
 import com.example.final_project.entity.Node;
+import com.example.final_project.entity.Player;
 import com.example.final_project.entity.Values;
 import com.example.final_project.lan.Client;
 import com.example.final_project.lan.Server;
@@ -26,6 +30,13 @@ public class ControllerLanGameActivity extends AppCompatActivity {
     Server server;
     Client client;
     int currentValue = 0;
+    Player player1, player2;
+
+    TextView name_1, name_2;
+    ProgressBar HP1, HP2;
+    ImageView avatar1, avatar2;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +46,18 @@ public class ControllerLanGameActivity extends AppCompatActivity {
     }
 
     void init() {
+        name_1 = findViewById(R.id.tv_lan_name1);
+        name_2 = findViewById(R.id.tv_lan_name2);
+//--------------
         board = new Node[Values.board_size][Values.board_size];
         table_layout = findViewById(R.id.board);
         controller = new ControllerGame(board);
         settingBoardGame();
         controller.createLittleMatrix();
         Bundle bundle = getIntent().getExtras();
+        player1 = (Player) bundle.get("player");
+
+
         MODE = (int) bundle.get("mode");
         if(MODE == Values.HOST){
             currentValue = Values.valueBlack;
