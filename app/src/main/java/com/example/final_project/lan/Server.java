@@ -13,7 +13,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server extends Thread {
+public class Server extends Thread implements ThreadRunning{
 
     private ServerSocket server;
     private Socket socket;
@@ -23,6 +23,7 @@ public class Server extends Thread {
     private ControllerGame controller;
     boolean dataIn;
     boolean dataOut;
+    boolean is_turn = true;
 
     Message messageOut = null;
 
@@ -68,6 +69,7 @@ public class Server extends Thread {
         dataOut = true;
     }
 
+    @Override
     public void pressNodeByMessage(Message mess){
         final int x = mess.getX();
         final int y = mess.getY();
@@ -77,12 +79,23 @@ public class Server extends Thread {
             public void run() {
                 image.setImageResource(Values.white_chess);
                 controller.exec(x,y, Values.valueWhite);
-                ControllerLanGameActivity.is_turn = true;
+                is_turn = true;
             }
         });
     }
 
+    @Override
     public void sendPoint(int x, int y, String mess){
         LanGameHelper.sendPoint(x,y,mess,oOut);
+    }
+
+    @Override
+    public boolean isTurn() {
+        return is_turn;
+    }
+
+    @Override
+    public void setTurn(boolean turn) {
+        this.is_turn = turn;
     }
 }

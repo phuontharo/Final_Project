@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/hippopotamus"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Winner"></activity>
+        <activity android:name=".ChooseCharacterActivity"></activity>
+        <activity android:name=".Winner" />
         <activity
             android:name=".SettingActivity"
             android:screenOrientation="landscape" />

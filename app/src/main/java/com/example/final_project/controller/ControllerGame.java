@@ -27,27 +27,28 @@ public class ControllerGame {
     }
 
     public int exec(int x, int y, int valueChess) {
-        System.out.println("Execute : "+x+":"+ y);
+        System.out.println("Execute : " + x + ":" + y);
         count = 0;
         is_continue = true;
         table[x][y] = valueChess;
         Node node = board[x][y];
         int value = table[x][y];
-        int defaultValue = value==Values.valueBlack?Values.valueWhite:Values.valueBlack;
+        int defaultValue = value == Values.valueBlack ? Values.valueWhite : Values.valueBlack;
         listDeath = new ArrayList<>();
-        findGtaphAndDelete(x,y,defaultValue);
+        findGtaphAndDelete(x, y, defaultValue);
+        System.out.println("Count : " + count);
         return count;
     }
 
-
-    void doSth(int x, int y, int value){
+    void doSth(int x, int y, int value) {
         is_continue = true;
-        core(x, y,value);
+        core(x, y, value);
         count = is_continue == false ? count : 0;
         if (count > 0) {
             changeDeath();
         }
     }
+
     void core(int x, int y, int value) {
         count++;
         listDeath.add(board[x][y]);
@@ -80,24 +81,25 @@ public class ControllerGame {
         }
     }
 
+
     boolean checkaliveNode(int x, int y) {
         if (x - 1 >= 0) {
-            if (table[x - 1][y] == 0) {
+            if (table[x - 1][y] == Values.valueEmpty) {
                 return true;
             }
         }
-        if (x + 1 <= table.length) {
-            if (table[x + 1][y] == 0) {
+        if (x + 1 <= table.length-1) {
+            if (table[x + 1][y] == Values.valueEmpty) {
                 return true;
             }
         }
         if (y - 1 >= 0) {
-            if (table[x][y - 1] == 0) {
+            if (table[x][y - 1] == Values.valueEmpty) {
                 return true;
             }
         }
-        if (y + 1 <= table.length) {
-            if (table[x][y + 1] == 0) {
+        if (y + 1 <= table.length-1) {
+            if (table[x][y + 1] == Values.valueEmpty) {
                 return true;
             }
         }
@@ -108,7 +110,7 @@ public class ControllerGame {
         for (int i = 0; i < listDeath.size(); i++) {
             Node node = listDeath.get(i);
             node.getButton().setImageResource(Values.chess_background_img);
-            table[node.getX()][node.getY()] = Values.death_value;
+            table[node.getX()][node.getY()] = Values.valueEmpty;
         }
         listDeath.clear();
     }
@@ -116,22 +118,22 @@ public class ControllerGame {
     void findGtaphAndDelete(int x, int y, int valueNode) {
         if (x - 1 >= 0) {
             if (table[x - 1][y] == valueNode) {
-                doSth(x-1, y, valueNode);
+                doSth(x - 1, y, valueNode);
             }
         }
-        if (x + 1 <= table.length) {
+        if (x + 1 <= table.length-1) {
             if (table[x + 1][y] == valueNode) {
-                doSth(x+1, y, valueNode);
+                doSth(x + 1, y, valueNode);
             }
         }
         if (y - 1 >= 0) {
             if (table[x][y - 1] == valueNode) {
-                doSth(x, y-1, valueNode);
+                doSth(x, y - 1, valueNode);
             }
         }
-        if (y + 1 <= table.length) {
+        if (y + 1 <= table.length-1) {
             if (table[x][y + 1] == valueNode) {
-                doSth(x, y+1, valueNode);
+                doSth(x, y + 1, valueNode);
             }
         }
     }
