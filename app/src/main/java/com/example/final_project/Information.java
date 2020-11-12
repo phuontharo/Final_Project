@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.final_project.entity.Player;
+import com.example.final_project.entity.Values;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class Information extends AppCompatActivity {
     SharedPreferences pref, prefMusic;
     SharedPreferences.Editor editor;
     int effectMode;
+    int MODE;
 
 
     @Override
@@ -188,26 +190,27 @@ public class Information extends AppCompatActivity {
             mPlayer.start();
         }
 
-        Bundle bundle = getIntent().getExtras();
-        playerInfor[currentPlayer] = getInforScreen();
-        if (currentPlayer == 0) { // save infor user = infor player1
-            saveFile();
-            currentPlayer++;
-            if (bundle.get("mode").toString().equals("double")) // if Local then go to set player2
-                setScreenInformation(playerInfor[1]);
-            else {//if Lan then get player2 infor
-                getPlayerFromLAN();
-                startActivity(intent);
-            }
-        } else {
-            saveFile();
-            startActivity(intent);
-        }
+           Bundle bundle = getIntent().getExtras();
+           playerInfor[currentPlayer] = getInforScreen();
+           if (currentPlayer == 0) { // save infor user = infor player1
+               saveFile();
+               currentPlayer++;
+               if (bundle.get("mode").toString().equals("double")) // if Local then go to set player2
+                   setScreenInformation(playerInfor[1]);
+               else {//if Lan then get player2
+                   intent = new Intent(this, LanGameActivity.class);
+                   getPlayerFromLAN();
+                   startActivity(intent);
+               }
+           } else {
+               saveFile();
+               startActivity(intent);
+           }
     }
 
     private void getPlayerFromLAN() {
-        playerInfor[1] = new Player("Player 2 hi", listImg.get(6));
-        intent.putExtra("player2", playerInfor[1]);
+        intent.putExtra("player", playerInfor[0]);
+        startActivity(intent);
     }
 
     public void saveFile() {
