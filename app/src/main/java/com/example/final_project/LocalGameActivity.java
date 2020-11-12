@@ -56,6 +56,7 @@ public class LocalGameActivity extends AppCompatActivity {
     int effectMode, hp;
 
     Player player1, player2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +64,6 @@ public class LocalGameActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_local_game);
-//        getSupportActionBar().hide();
         setting();
         Init();
         startBlackTimer();
@@ -125,6 +125,8 @@ public class LocalGameActivity extends AppCompatActivity {
         hp = pref.getInt("HP", -1);
         if (hp == -1) hpLeft1 = hpLeft2 = hpDefault;
         else {
+            String[] hp_values = (getResources().getStringArray(R.array.hp)); // VALUE
+            hp = Integer.valueOf(hp_values[hp]);
             hpLeft1 = hpLeft2 = hp;
             hpRatio = 100 / hp;
         }
@@ -233,16 +235,17 @@ public class LocalGameActivity extends AppCompatActivity {
         textTimer.setText(timeLeftFormatted);
     }
 
-//    void changeSizeHP(ProgressBar pb) {
+    //    void changeSizeHP(ProgressBar pb) {
 //        int hpBarLeft = (int) (pb.getProgress() - hpLost * hpRatio);
 //        hpBarLeft = hpBarLeft > 0 ? hpBarLeft : 0;
 //        pb.setProgress(hpBarLeft);
 //    }
-void changeSizeHP(ProgressBar pb) {
-    pb.setProgress(pb.getProgress() - hpLost * 20);
-}
+    void changeSizeHP(ProgressBar pb) {
+        pb.setProgress(pb.getProgress() - hpLost * 20);
+    }
 
     Intent intent;
+
     void subHP() {
         boolean is_win = false;
         if (defaultColor == Values.black_chess) {
@@ -270,6 +273,7 @@ void changeSizeHP(ProgressBar pb) {
     }
 
     final int REQUEST_CODE_WIN = 729;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -285,6 +289,7 @@ void changeSizeHP(ProgressBar pb) {
             }
         }
     }
+
     public void newGameOnClick(View view) {
         if (effectMode != 0) {
             MediaPlayer mPlayer = MediaPlayer.create(this, buttonEffect);
@@ -293,7 +298,8 @@ void changeSizeHP(ProgressBar pb) {
         setNewGame();
         resetTimer();
     }
-    void setNewGame(){
+
+    void setNewGame() {
         defaultColor = Values.black_chess;
         for (int i = 0; i < Values.board_size; i++) {
             for (int j = 0; j < Values.board_size; j++) {
@@ -303,7 +309,7 @@ void changeSizeHP(ProgressBar pb) {
         }
         HP1.setProgress(100);
         HP2.setProgress(100);
-        if(count%10==0){
+        if (count % 10 == 0) {
             final MediaPlayer mp = MediaPlayer.create(this, R.raw.dungnghien);
             mp.start();
         }

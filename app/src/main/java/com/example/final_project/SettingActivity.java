@@ -23,13 +23,12 @@ import com.example.final_project.entity.Values;
 import static com.example.final_project.MainActivity.musicBackgroundService;
 
 public class SettingActivity extends AppCompatActivity {
-    Spinner spinnerSize, spinnerTime;
+    Spinner spinnerSize, spinnerTime, spinnerHP;
     // String[] sizeBoard;
     int buttonEffect = R.raw.choose_sound;
     int musicMode, effectMode, size_board, hp;
     int time;
     int m, s; // minute, seconds
-    EditText textSizeHP;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
 
@@ -44,7 +43,6 @@ public class SettingActivity extends AppCompatActivity {
         editor = pref.edit();
         effectMode = pref.getInt("EFFECT", -1);
         settingSpinner();
-        settingHP();
         settingSwitch();
     }
 
@@ -112,26 +110,30 @@ public class SettingActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-    }
 
-    private void settingHP() {
-        textSizeHP = findViewById(R.id.editTextNumberDecimal);
-        textSizeHP.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-                hp = Integer.valueOf(textSizeHP.getText().toString());
+        spinnerHP = findViewById(R.id.spinnerHP);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        adapter = ArrayAdapter.createFromResource(this,
+                R.array.hp, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinnerHP.setAdapter(adapter);
+        hp = pref.getInt("HP", -1);
+        if (hp == -1) spinnerHP.setSelection(5);
+        else spinnerHP.setSelection(hp);
+        spinnerHP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int spinner_pos = spinnerHP.getSelectedItemPosition(); // POSITION
                 editor.remove("HP");
                 editor.commit();
-                editor.putInt("HP", hp);
+                editor.putInt("HP", spinner_pos);
                 editor.commit();
             }
 
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                hp = pref.getInt("HP", -1);
-                if (hp == -1) return;
-                else textSizeHP.setText("" + hp);
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
     }
@@ -188,9 +190,7 @@ public class SettingActivity extends AppCompatActivity {
         });
     }
 
-    void save() {
-        Values.HP = Integer.parseInt(textSizeHP.getText().toString());
-    }
+//    void save() {        Values.HP = Integer.parseInt(textSizeHP.getText().toString());    }
 
     public void backOnClick(View view) {
         if (effectMode != 0) {
