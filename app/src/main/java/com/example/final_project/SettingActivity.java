@@ -117,7 +117,6 @@ public class SettingActivity extends AppCompatActivity {
     private void settingHP() {
         textSizeHP = findViewById(R.id.editTextNumberDecimal);
         textSizeHP.addTextChangedListener(new TextWatcher() {
-
             public void afterTextChanged(Editable s) {
                 hp = Integer.valueOf(textSizeHP.getText().toString());
                 editor.remove("HP");

@@ -12,7 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class Client extends Thread {
+public class Client extends Thread implements ThreadRunning{
 
     private Socket socket;
     private ObjectOutputStream oOut;
@@ -21,6 +21,7 @@ public class Client extends Thread {
     private ControllerGame controller;
     boolean dataIn;
     boolean dataOut;
+    boolean is_turn = false;
 
     Message messageOut;
 
@@ -70,7 +71,7 @@ public class Client extends Thread {
             public void run() {
                 image.setImageResource(Values.black_chess);
                 controller.exec(x, y, Values.valueBlack);
-                ControllerLanGameActivity.is_turn = true;
+                is_turn = true;
             }
         });
     }
@@ -78,5 +79,15 @@ public class Client extends Thread {
     public void sendPoint(int x, int y, String mess) {
         System.out.println("Send Point ");
         LanGameHelper.sendPoint(x, y, mess, oOut);
+    }
+
+    @Override
+    public boolean isTurn() {
+        return is_turn;
+    }
+
+    @Override
+    public void setTurn(boolean turn) {
+        this.is_turn = turn;
     }
 }

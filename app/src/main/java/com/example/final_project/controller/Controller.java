@@ -38,9 +38,7 @@ public class Controller {
             changeValue(selfKill, value);
             return 0- selfKill.size();
         }
-
         return 0;
-
     }
 
     // Lấy các Node xung quanh và có giá trị đảo nghịch
@@ -76,6 +74,7 @@ public class Controller {
         }
         return nodes;
     }
+
 
     /*
      * Check xem một chuỗi liền kề nhau có tiếp xúc với ô có giá trị 0 hay không, nếu có, Graphs được coi là sống

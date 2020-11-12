@@ -63,7 +63,7 @@ public class LocalGameActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_local_game);
-  //      getSupportActionBar().hide();
+//        getSupportActionBar().hide();
         setting();
         Init();
         startBlackTimer();
@@ -133,6 +133,7 @@ public class LocalGameActivity extends AppCompatActivity {
     }
 
     void Init() {
+        int scale_button = Values.board_height / Values.board_size -10;
         for (int i = 0; i < board.length; i++) {
             TableRow row = new TableRow(this);
             for (int j = 0; j < board[0].length; j++) {
@@ -140,7 +141,7 @@ public class LocalGameActivity extends AppCompatActivity {
                 final int y = j;
                 final ImageButton button = new ImageButton(this);
                 button.setImageResource(Values.chess_background_img);
-                TableRow.LayoutParams layout = new TableRow.LayoutParams(110, 110);
+                TableRow.LayoutParams layout = new TableRow.LayoutParams(scale_button, scale_button);
                 button.setLayoutParams(layout);
 
                 final Node node = new Node(i, j, button, Values.valueEmpty, false);

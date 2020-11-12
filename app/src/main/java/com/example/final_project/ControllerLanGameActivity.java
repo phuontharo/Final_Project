@@ -14,6 +14,7 @@ import com.example.final_project.entity.Node;
 import com.example.final_project.entity.Values;
 import com.example.final_project.lan.Client;
 import com.example.final_project.lan.Server;
+import com.example.final_project.lan.ThreadRunning;
 
 public class ControllerLanGameActivity extends AppCompatActivity {
 
@@ -21,11 +22,10 @@ public class ControllerLanGameActivity extends AppCompatActivity {
     TableLayout table_layout;
     int current_chess;
     ControllerGame controller;
-    public static boolean is_turn;
     int MODE;
     Server server;
     Client client;
-
+    int currentValue = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +43,13 @@ public class ControllerLanGameActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         MODE = (int) bundle.get("mode");
         if(MODE == Values.HOST){
+            currentValue = Values.valueBlack;
             current_chess = Values.black_chess;
-            is_turn = true;
             server = new Server(board,controller);
             server.start();
         }else if(MODE == Values.GUEST){
+            currentValue = Values.valueWhite;
             current_chess = Values.white_chess;
-            is_turn = false;
             client = new Client(board, controller);
             client.start();
         }else if(MODE == Values.mode_local){
@@ -66,7 +66,8 @@ public class ControllerLanGameActivity extends AppCompatActivity {
     }
 
     private void settingBoardGame() {
-        int scale_button = Values.board_width / 10 - 10;
+        int scale_button = Values.board_height / Values.board_size - 10;
+        System.out.println("-----" + scale_button);
         for (int i = 0; i < board.length; i++) {
             TableRow row = new TableRow(this);
             for (int j = 0; j < board[0].length; j++) {
@@ -100,16 +101,21 @@ public class ControllerLanGameActivity extends AppCompatActivity {
     }
 
     void handleClickChessLan(Node node, int x, int y){
-     //   if(is_turn){
-            node.getButton().setImageResource(current_chess);
-            int HP = controller.exec(x,y, current_chess);
             if(MODE == Values.GUEST){
-                client.setMessage(new Message("ok",x,y));
+                execClickEvent(client,node,x,y);
             }else{
-                server.setMessage(new Message("ok",x,y));
+                execClickEvent(server,node,x,y);
             }
-            is_turn = false;
-    //    }
+
     }
 
+    void execClickEvent(ThreadRunning thr,Node node, int x, int y){
+        if(thr.isTurn()){
+            thr.setTurn(false);
+            node.getButton().setImageResource(current_chess);
+            int HP = controller.exec(x,y, currentValue);
+            thr.setMessage(new Message("ok",x,y));
+
+        }
+    }
 }

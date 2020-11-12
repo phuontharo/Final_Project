@@ -109,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        Values.board_width = size.x - 100;
-        Values.board_height = size.x - 100;
+        Values.board_width = size.y - 100;
+        Values.board_height = size.y - 100;
     }
 
     private void settingMusic() {
@@ -160,8 +160,8 @@ public class MainActivity extends AppCompatActivity {
             mPlayer.start();
         }
 
-//        Intent intent = new Intent(this, WaitGuest.class);
-//        startActivity(intent);
+        Intent intent = new Intent(this, LanGameActivity.class);
+        startActivity(intent);
     }
 
     public void onClickSetting(View view) {
