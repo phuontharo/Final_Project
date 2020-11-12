@@ -131,7 +131,8 @@ public class LocalGameActivity extends AppCompatActivity {
             hpLeft1 = hpLeft2 = hp;
             hpRatio = 100 / hp;
         }
-
+        textHP1.setText("" + hpLeft1);
+        textHP2.setText("" + hpLeft2);
         updateCountDownText(timer2, mWhiteTimeLeftInMillis);
     }
 
@@ -235,14 +236,14 @@ public class LocalGameActivity extends AppCompatActivity {
         textTimer.setText(timeLeftFormatted);
     }
 
-    //    void changeSizeHP(ProgressBar pb) {
-//        int hpBarLeft = (int) (pb.getProgress() - hpLost * hpRatio);
-//        hpBarLeft = hpBarLeft > 0 ? hpBarLeft : 0;
-//        pb.setProgress(hpBarLeft);
-//    }
     void changeSizeHP(ProgressBar pb) {
-        pb.setProgress(pb.getProgress() - hpLost * 20);
+        int hpBarLeft = (int) (pb.getProgress() - hpLost * hpRatio);
+        hpBarLeft = hpBarLeft > 0 ? hpBarLeft : 0;
+        pb.setProgress(hpBarLeft);
     }
+//    void changeSizeHP(ProgressBar pb) {
+//        pb.setProgress(pb.getProgress() - hpLost * 20);
+//    }
 
     Intent intent;
 
@@ -250,20 +251,20 @@ public class LocalGameActivity extends AppCompatActivity {
         boolean is_win = false;
         if (defaultColor == Values.black_chess) {
             changeSizeHP(HP2);
-            if (HP2.getProgress() <= 0) {
+            hpLeft2 = hpLeft2 - hpLost;
+            textHP2.setText("" + hpLeft2);
+            if (hpLeft2 <= 0) {
                 intent.putExtra("winner", player1);
                 intent.putExtra("loser", player2);
-                hpLeft2 = hpLeft2 - hpLost;
-                textHP2.setText("" + hpLeft2);
                 is_win = true;
             }
         } else if (defaultColor == Values.white_chess) {
             changeSizeHP(HP1);
-            if (HP1.getProgress() <= 0) {
+            hpLeft1 = hpLeft1 - hpLost;
+            textHP1.setText("" + hpLeft1);
+            if (hpLeft1 <= 0) {
                 intent.putExtra("winner", player2);
                 intent.putExtra("loser", player1);
-                hpLeft1 = hpLeft1 - hpLost;
-                textHP1.setText("" + hpLeft1);
                 is_win = true;
             }
         }
